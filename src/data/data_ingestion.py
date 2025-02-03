@@ -11,7 +11,7 @@ load_dotenv()
 
 # Get configuration from environment variables
 BASE_URL = 'https://d37ci6vzurychx.cloudfront.net/trip-data/'
-LOCAL_DIR = 'data/raw/'
+RAW_DATA_DIR = os.getenv('RAW_DATA_DIR')
 MINIO_ENDPOINT = os.getenv('MINIO_ENDPOINT')
 MINIO_ACCESS_KEY = os.getenv('MINIO_ROOT_USER')
 MINIO_SECRET_KEY = os.getenv('MINIO_ROOT_PASSWORD')
@@ -39,7 +39,7 @@ def download_parquet_file(year, month):
     """Download a month's taxi data and save it locally."""
     file_name = f"yellow_tripdata_{year}-{month:02d}.parquet"
     file_url = f"{BASE_URL}{file_name}"
-    local_path = os.path.join(LOCAL_DIR, file_name)
+    local_path = os.path.join(RAW_DATA_DIR, file_name)
 
     response = requests.get(file_url)
     if response.status_code == 200:
@@ -63,7 +63,7 @@ def upload_to_minio(local_path, bucket, object_name):
 def integrate_new_data(new_data_path):
     """Merge sampled new data with existing data while keeping only the last N months."""
     object_name = "yellow_tripdata_sampled.csv"
-    local_csv_path = os.path.join(LOCAL_DIR, object_name)
+    local_csv_path = os.path.join(RAW_DATA_DIR, object_name)
 
     # Try to load existing dataset from MinIO
     try:
@@ -116,8 +116,8 @@ def process_data():
             integrate_new_data(parquet_path)
 
 def main():
-    if not os.path.exists(LOCAL_DIR):
-        os.makedirs(LOCAL_DIR)
+    if not os.path.exists(RAW_DATA_DIR):
+        os.makedirs(RAW_DATA_DIR)
     process_data()
 
 if __name__ == "__main__":

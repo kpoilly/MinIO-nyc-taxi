@@ -1,7 +1,6 @@
 /data/
 !/src/data/
 venv
-.env
 mlruns/
 /models/
 !/src/models/

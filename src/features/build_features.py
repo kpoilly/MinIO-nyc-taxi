@@ -9,10 +9,10 @@ from sklearn.model_selection import train_test_split
 load_dotenv()
 
 # Configuration
-RAW_DATA_DIR = "data/raw/"
-PROCESSED_DATA_DIR = "data/processed/"
-CONSOLIDATED_FILE_NAME = "yellow_tripdata_sampled.csv"
-FEATURES_FILE_NAME = "yellow_tripdata_sampled_features.csv"
+RAW_DATA_DIR = os.getenv("RAW_DATA_DIR")
+PROCESSED_DATA_DIR = os.getenv("PROCESSED_DATA_DIR")
+CONSOLIDATED_FILE_NAME = os.getenv("CONSOLIDATED_FILE_NAME")
+FEATURES_FILE_NAME = os.getenv("FEATURES_FILE_NAME")
 
 MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT")
 MINIO_ACCESS_KEY = os.getenv("MINIO_ROOT_USER")

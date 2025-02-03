@@ -13,8 +13,7 @@ import pickle
 load_dotenv()
 
 # Configuration
-RAW_DATA_DIR = "data/raw/"
-PROCESSED_DATA_DIR = "data/processed/"
+PROCESSED_DATA_DIR = os.getenv("PROCESSED_DATA_DIR")
 
 # MinIO configuration
 MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT")
