@@ -1,0 +1,9 @@
+FROM datascientest/minio:latest
+
+WORKDIR /data
+
+# Expose ports
+EXPOSE 9000 9001
+
+# Run MinIO server with console access
+CMD ["server", "/data", "--console-address", ":9001"]
