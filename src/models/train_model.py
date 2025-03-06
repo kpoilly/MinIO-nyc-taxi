@@ -2,43 +2,23 @@ import os
 import pandas as pd
 import mlflow
 import mlflow.sklearn
-import boto3
-from botocore.exceptions import NoCredentialsError
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error
-from dotenv import load_dotenv
 import pickle
 
-# Load environment variables
-load_dotenv()
+import sys
+from pathlib import Path
+# Add src directory to path
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+
+from config import config
+from config.minio_setup import upload_to_minio, download_from_minio
 
 # Configuration
-PROCESSED_DATA_DIR = os.getenv("PROCESSED_DATA_DIR")
+PROCESSED_DATA_DIR = config.PROCESSED_DATA_DIR
 
-# MinIO configuration
-MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT")
-MINIO_ACCESS_KEY = os.getenv("MINIO_ROOT_USER")
-MINIO_SECRET_KEY = os.getenv("MINIO_ROOT_PASSWORD")
 BUCKET_NAME = os.getenv("MINIO_BUCKET")
-MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI")
-
-# Initialize MinIO client
-s3_client = boto3.client(
-    "s3",
-    endpoint_url=MINIO_ENDPOINT,
-    aws_access_key_id=MINIO_ACCESS_KEY,
-    aws_secret_access_key=MINIO_SECRET_KEY,
-)
-
-def download_from_minio(bucket, object_name, local_path):
-    """Download a file from MinIO."""
-    try:
-        s3_client.download_file(bucket, object_name, local_path)
-        print(f"Downloaded {object_name} from MinIO to {local_path}")
-        return True
-    except Exception as e:
-        print(f"Error downloading {object_name}: {e}")
-        return False
+MLFLOW_TRACKING_URI = config.MLFLOW_TRACKING_URI
 
 def load_data():
     """Load the train and test datasets from MinIO"""
@@ -92,9 +72,9 @@ def train_model(X_train, X_test, y_train, y_test):
 def log_model(model, mae):
     """Log the model and metrics into MLflow"""
     mlflow.set_tracking_uri(MLFLOW_TRACKING_URI)
-    os.environ["AWS_ACCESS_KEY_ID"] = MINIO_ACCESS_KEY
-    os.environ["AWS_SECRET_ACCESS_KEY"] = MINIO_SECRET_KEY
-    os.environ["MLFLOW_S3_ENDPOINT_URL"] = MINIO_ENDPOINT
+    os.environ["AWS_ACCESS_KEY_ID"] = config.MINIO_ACCESS_KEY
+    os.environ["AWS_SECRET_ACCESS_KEY"] = config.MINIO_SECRET_KEY
+    os.environ["MLFLOW_S3_ENDPOINT_URL"] = config.MINIO_ENDPOINT
     os.environ["MLFLOW_ARTIFACT_URI"] = MLFLOW_TRACKING_URI
 
 

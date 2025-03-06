@@ -1,50 +1,21 @@
 import os
 import pandas as pd
-import boto3
-from botocore.exceptions import NoCredentialsError
-from dotenv import load_dotenv
 from sklearn.model_selection import train_test_split
 
-# Load environment variables
-load_dotenv()
+import sys
+from pathlib import Path
+# Add src directory to path
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+
+from config import config
+from config.minio_setup import upload_to_minio, download_from_minio
 
 # Configuration
-RAW_DATA_DIR = os.getenv("RAW_DATA_DIR")
-PROCESSED_DATA_DIR = os.getenv("PROCESSED_DATA_DIR")
-CONSOLIDATED_FILE_NAME = os.getenv("CONSOLIDATED_FILE_NAME")
-FEATURES_FILE_NAME = os.getenv("FEATURES_FILE_NAME")
-
-MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT")
-MINIO_ACCESS_KEY = os.getenv("MINIO_ROOT_USER")
-MINIO_SECRET_KEY = os.getenv("MINIO_ROOT_PASSWORD")
-BUCKET_NAME = os.getenv("MINIO_BUCKET")
-print(BUCKET_NAME)
-
-# Initialize MinIO client
-s3_client = boto3.client(
-    "s3",
-    endpoint_url=MINIO_ENDPOINT,
-    aws_access_key_id=MINIO_ACCESS_KEY,
-    aws_secret_access_key=MINIO_SECRET_KEY,
-)
-
-def download_from_minio(bucket, object_name, local_path):
-    """Download a file from MinIO."""
-    try:
-        s3_client.download_file(bucket, object_name, local_path)
-        print(f"Downloaded {object_name} from MinIO")
-        return True
-    except Exception as e:
-        print(f"Error downloading {object_name}: {e}")
-        return False
-
-def upload_to_minio(local_path, bucket, object_name):
-    """Upload a file to MinIO."""
-    try:
-        s3_client.upload_file(local_path, bucket, object_name)
-        print(f"Uploaded {object_name} to MinIO")
-    except NoCredentialsError:
-        print("Error: Invalid MinIO credentials.")
+RAW_DATA_DIR = config.RAW_DATA_DIR
+PROCESSED_DATA_DIR = config.PROCESSED_DATA_DIR
+CONSOLIDATED_FILE_NAME = config.CONSOLIDATED_FILE_NAME
+FEATURES_FILE_NAME = config.FEATURES_FILE_NAME
+BUCKET_NAME = config.BUCKET_NAME
 
 def clean_missing_data(df):
     """Handle missing data in the dataset."""
