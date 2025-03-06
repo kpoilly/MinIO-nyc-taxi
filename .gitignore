@@ -4,3 +4,5 @@ venv
 mlruns/
 /models/
 !/src/models/
+/src/app/
+/src/config/

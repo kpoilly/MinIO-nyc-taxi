@@ -1,39 +1,22 @@
 import os
 import requests
 import pandas as pd
-import boto3
-from botocore.exceptions import NoCredentialsError
-from dotenv import load_dotenv
 from datetime import datetime
 
-# Load environment variables from .env file
-load_dotenv()
+import sys
+from pathlib import Path
+# Add src directory to path
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 
-# Get configuration from environment variables
-BASE_URL = 'https://d37ci6vzurychx.cloudfront.net/trip-data/'
-RAW_DATA_DIR = os.getenv('RAW_DATA_DIR')
-MINIO_ENDPOINT = os.getenv('MINIO_ENDPOINT')
-MINIO_ACCESS_KEY = os.getenv('MINIO_ROOT_USER')
-MINIO_SECRET_KEY = os.getenv('MINIO_ROOT_PASSWORD')
-BUCKET_NAME = os.getenv('MINIO_BUCKET')
+from config import config
+from config.minio_setup import upload_to_minio, download_from_minio
+
+# Configuration
+BASE_URL = config.BASE_URL
+RAW_DATA_DIR = config.RAW_DATA_DIR
+BUCKET_NAME = config.BUCKET_NAME
 MONTHS_TO_KEEP = 6
 SAMPLE_FRACTION = 0.01
-
-# Initialize MinIO client
-s3_client = boto3.client(
-    's3',
-    endpoint_url=MINIO_ENDPOINT,
-    aws_access_key_id=MINIO_ACCESS_KEY,
-    aws_secret_access_key=MINIO_SECRET_KEY
-)
-
-def ensure_bucket_exists(bucket):
-    """Create the bucket if it does not exist."""
-    try:
-        s3_client.head_bucket(Bucket=bucket)
-    except:
-        print(f"Bucket '{bucket}' not found. Creating it...")
-        s3_client.create_bucket(Bucket=bucket)
 
 def download_parquet_file(year, month):
     """Download a month's taxi data and save it locally."""
@@ -51,26 +34,16 @@ def download_parquet_file(year, month):
         print(f"Failed to download {file_url}. HTTP Status Code: {response.status_code}")
         return None
 
-def upload_to_minio(local_path, bucket, object_name):
-    """Upload a file to MinIO."""
-    ensure_bucket_exists(bucket)
-    try:
-        s3_client.upload_file(local_path, bucket, object_name)
-        print(f"Uploaded {object_name} to MinIO")
-    except NoCredentialsError:
-        print("Error: Invalid MinIO credentials.")
-
 def integrate_new_data(new_data_path):
     """Merge sampled new data with existing data while keeping only the last N months."""
-    object_name = "yellow_tripdata_sampled.csv"
+    object_name = config.CONSOLIDATED_FILE_NAME
     local_csv_path = os.path.join(RAW_DATA_DIR, object_name)
 
     # Try to load existing dataset from MinIO
-    try:
-        s3_client.download_file(BUCKET_NAME, object_name, local_csv_path)
+    if download_from_minio(BUCKET_NAME, object_name, local_csv_path):
         df_existing = pd.read_csv(local_csv_path)
         print("Loaded existing dataset from MinIO")
-    except:
+    else:
         df_existing = pd.DataFrame()
         print("No existing dataset found in MinIO. Creating a new dataset.")
 
@@ -98,7 +71,7 @@ def process_data():
     """Determine months to process and download, sample, integrate, and upload new data."""
     today = datetime.today()
     current_month = today.month
-    current_year = today.year
+    current_year = today.year -1
 
     # Determine the last two full months
     if current_month in [1, 2]:
