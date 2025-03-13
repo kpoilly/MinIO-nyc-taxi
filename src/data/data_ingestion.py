@@ -9,7 +9,7 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 from config import config
-from config.minio_setup import upload_to_minio, download_from_minio
+from config.minio_setup import upload_to_minio, download_from_minio, check_versioning_status
 
 # Configuration
 BASE_URL = config.BASE_URL
@@ -92,6 +92,8 @@ def main():
     if not os.path.exists(RAW_DATA_DIR):
         os.makedirs(RAW_DATA_DIR)
     process_data()
+    check_versioning_status(BUCKET_NAME)
 
 if __name__ == "__main__":
     main()
+    

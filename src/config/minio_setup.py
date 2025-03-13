@@ -23,7 +23,7 @@ def enable_versioning(bucket_name):
     except Exception as e:
         print(f"Error enabling versioning for bucket '{bucket_name}': {e}")
 
-def ensure_bucket_exists(bucket_name):
+def ensure_bucket_exists(bucket_name, versioning):
     """Check if the bucket exists, create if it doesn’t."""
     try:
         s3_client.head_bucket(Bucket=bucket_name)
@@ -32,7 +32,8 @@ def ensure_bucket_exists(bucket_name):
         s3_client.create_bucket(Bucket=bucket_name)
 
     # Enable versioning on the bucket (if it's not already enabled)
-    enable_versioning(bucket_name)
+    if versioning:
+        enable_versioning(bucket_name)
 
 def check_versioning_status(bucket_name):
     """Check if versioning is enabled on a bucket."""
@@ -45,9 +46,9 @@ def check_versioning_status(bucket_name):
         print(f"Error checking versioning status for bucket '{bucket_name}': {e}")
         return None
 
-def upload_to_minio(local_path, bucket, object_name):
+def upload_to_minio(local_path, bucket, object_name, versioning = False):
     """Upload a file to MinIO."""
-    ensure_bucket_exists(bucket)
+    ensure_bucket_exists(bucket, versioning)
     try:
         s3_client.upload_file(local_path, bucket, object_name)
         print(f"Uploaded {object_name} to MinIO")
