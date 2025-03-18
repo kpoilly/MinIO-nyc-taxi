@@ -29,7 +29,7 @@ services:
       - MLFLOW_ARTIFACT_URI=s3://${MINIO_BUCKET}/mlflow/
       - AWS_ACCESS_KEY_ID=${MINIO_ROOT_USER}
       - AWS_SECRET_ACCESS_KEY=${MINIO_ROOT_PASSWORD}
-      - MLFLOW_S3_ENDPOINT_URL=${MINIO_ENDPOINT}
+      - MLFLOW_S3_ENDPOINT_URL=http://minio:9000
     volumes:
       - mlflow_data:/mlflow
 

@@ -2,7 +2,6 @@
 !/src/data/
 venv
 mlruns/
-/models/
-!/src/models/
+mlflow_artifacts/
 /src/app/
 /src/config/
