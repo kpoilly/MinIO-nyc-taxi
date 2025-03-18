@@ -12,6 +12,7 @@ The project uses Docker Compose to deploy both MinIO and MLflow instances. The M
 
 
 After completion of this use case, the tree structure of the project will be the following:
+```bash
 ├───data
 │   ├───processed
 │   │   ├───X_test.csv
@@ -48,6 +49,7 @@ After completion of this use case, the tree structure of the project will be the
 ├───LICENCE
 ├───README.md
 └───requirements.txt
+```
 
 During this use case we'll mainly focus on the completion of the src scripts as to put in place Minio as the object storage solution. Let's get started!
 
