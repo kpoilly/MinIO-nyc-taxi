@@ -30,15 +30,8 @@ def load_data():
     y_test_path = os.path.join(PROCESSED_DATA_DIR, "y_test.csv")
     
     # Download datasets from MinIO
-    if not download_from_minio(BUCKET_NAME, "X_train.csv", X_train_path):
-        return None, None, None, None  # Return None if download fails
-    if not download_from_minio(BUCKET_NAME, "X_test.csv", X_test_path):
-        return None, None, None, None  # Return None if download fails
-    if not download_from_minio(BUCKET_NAME, "y_train.csv", y_train_path):
-        return None, None, None, None  # Return None if download fails
-    if not download_from_minio(BUCKET_NAME, "y_test.csv", y_test_path):
-        return None, None, None, None  # Return None if download fails
-
+                ### Insert your code here ###
+   
     # Load the datasets into DataFrames
     try:
         X_train = pd.read_csv(X_train_path)
@@ -71,11 +64,7 @@ def train_model(X_train, X_test, y_train, y_test):
 def log_model(model, mae):
     """Log the model and metrics into MLflow, using MinIO as the artifact store."""
     # Set up MinIO environment variables
-    os.environ["AWS_ACCESS_KEY_ID"] = config.MINIO_ACCESS_KEY
-    os.environ["AWS_SECRET_ACCESS_KEY"] = config.MINIO_SECRET_KEY
-    os.environ["MLFLOW_S3_ENDPOINT_URL"] = config.MINIO_ENDPOINT
-    os.environ["MLFLOW_TRACKING_URI"] = MLFLOW_TRACKING_URI
-    os.environ["MLFLOW_ARTIFACT_LOCATION"] = f"s3://{BUCKET_NAME}/mlflow-artifacts"
+                ### Insert your code here ###
 
     # Log parameters, metrics, and artifacts within the MLflow run
     mlflow.log_param("model_type", "RandomForestRegressor")

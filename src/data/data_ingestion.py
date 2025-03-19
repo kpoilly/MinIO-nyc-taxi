@@ -40,9 +40,9 @@ def integrate_new_data(new_data_path):
     local_csv_path = os.path.join(RAW_DATA_DIR, object_name)
 
     # Try to load existing dataset from MinIO
-    if download_from_minio(BUCKET_NAME, object_name, local_csv_path):
-        df_existing = pd.read_csv(local_csv_path)
-        print("Loaded existing dataset from MinIO")
+                
+    if 
+            ### Insert your code here ###
     else:
         df_existing = pd.DataFrame()
         print("No existing dataset found in MinIO. Creating a new dataset.")
@@ -63,9 +63,11 @@ def integrate_new_data(new_data_path):
     latest_date = df_combined["tpep_pickup_datetime"].max()
     df_combined = df_combined[df_combined["tpep_pickup_datetime"] >= latest_date - pd.DateOffset(months=MONTHS_TO_KEEP)]
 
-    # Save and upload the new dataset
+    # Save the new dataset
     df_combined.to_csv(local_csv_path, index=False)
-    upload_to_minio(local_csv_path, BUCKET_NAME, object_name)
+
+    # Upload to MinIO
+                ### Insert your code here ###
 
 def process_data():
     """Determine months to process and download, sample, integrate, and upload new data."""
@@ -92,7 +94,9 @@ def main():
     if not os.path.exists(RAW_DATA_DIR):
         os.makedirs(RAW_DATA_DIR)
     process_data()
-    check_versioning_status(BUCKET_NAME)
+    
+    # Check versioning status
+                ### Insert your code here ###
 
 if __name__ == "__main__":
     main()
