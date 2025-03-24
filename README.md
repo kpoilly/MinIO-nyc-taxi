@@ -60,9 +60,10 @@ Before diving into the project, follow these initial setup steps:
 To get started, fork this repository to your GitHub account. Then, clone it to your local machine using:
 
 ```bash
-git clone https://github.com/YOUR_GITHUB_USERNAME/NYC-Taxi-Fare-Prediction-MinIO.git
-cd NYC-Taxi-Fare-Prediction-MinIO
+git clone https://github.com/YOUR_GITHUB_USERNAME/MinIO-nyc-taxi.git
+cd MinIO-nyc-taxi
 ```
+Don't forget to replace `YOUR_GITHUB_USERNAME` by your own username.
 
 2. Create & Activate a Virtual Environment
 It’s recommended to use a virtual environment to manage dependencies. Run the following:
