@@ -67,6 +67,7 @@ Don't forget to replace `YOUR_GITHUB_USERNAME` by your own username.
 
 2. Create & Activate a Virtual Environment
 It’s recommended to use a virtual environment to manage dependencies. Run the following:
+
 For Windows (PowerShell):
 
 ```bash
