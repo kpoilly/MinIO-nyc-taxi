@@ -41,8 +41,9 @@ def integrate_new_data(new_data_path):
 
     # Try to load existing dataset from MinIO
                 
-    if 
-            ### Insert your code here ###
+    if download_from_minio(BUCKET_NAME, object_name, local_csv_path):
+        df_existing = pd.read_csv(local_csv_path)
+        print("Loaded existing dataset from MinIO")
     else:
         df_existing = pd.DataFrame()
         print("No existing dataset found in MinIO. Creating a new dataset.")
@@ -67,7 +68,7 @@ def integrate_new_data(new_data_path):
     df_combined.to_csv(local_csv_path, index=False)
 
     # Upload to MinIO
-                ### Insert your code here ###
+    upload_to_minio(local_csv_path, BUCKET_NAME, object_name)
 
 def process_data():
     """Determine months to process and download, sample, integrate, and upload new data."""
@@ -96,7 +97,7 @@ def main():
     process_data()
     
     # Check versioning status
-                ### Insert your code here ###
+    check_versioning_status(BUCKET_NAME)
 
 if __name__ == "__main__":
     main()

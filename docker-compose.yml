@@ -2,8 +2,36 @@ version: "3.8"
 
 services:
   minio:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile.minio 
+    container_name: minio_server
+    restart: always
+    ports:
+      - "${MINIO_PORT}:9000"
+      - "${MINIO_CONSOLE_PORT}:9001"
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+    volumes:
+      - minio_data:/data
 
   mlflow:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile.mlflow  
+    container_name: mlflow_server
+    restart: always
+    ports:
+      - "${MLFLOW_PORT}:5000"
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - MLFLOW_ARTIFACT_URI=s3://${MINIO_BUCKET}/mlflow/
+      - AWS_ACCESS_KEY_ID=${MINIO_ROOT_USER}
+      - AWS_SECRET_ACCESS_KEY=${MINIO_ROOT_PASSWORD}
+      - MLFLOW_S3_ENDPOINT_URL=http://minio:9000
+    volumes:
+      - mlflow_data:/mlflow
 
 volumes:
   minio_data:
