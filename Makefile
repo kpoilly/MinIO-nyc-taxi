@@ -63,6 +63,18 @@ docker-minio-mlflow:
 ingest-data:
 	python src/data/data_ingestion.py
 
+build-features:
+	python src/features/build_features.py
+
+train:
+	python src/models/train_model.py
+
+clean:
+	docker-compose down
+
+fclean:
+	docker-compose down -v
+
 .PHONY:
 	run-docker run-docker-secure install-client mc-alias info add-bucket1 add-bucket2\
 	list-buckets rm-bucket1 rm-bucket2 add-user1 disable-user1 enable-user1 info-user1\
