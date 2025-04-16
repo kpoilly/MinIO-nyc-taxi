@@ -81,7 +81,10 @@ def split_and_save_data(df):
     print("Saved train/test datasets locally.")
 
     # Upload to MinIO
-                ### Insert your code here ###
+    upload_to_minio(X_train_path, BUCKET_NAME, "X_train.csv")
+    upload_to_minio(X_test_path, BUCKET_NAME, "X_test.csv")
+    upload_to_minio(y_train_path, BUCKET_NAME, "y_train.csv")
+    upload_to_minio(y_test_path, BUCKET_NAME, "y_test.csv")
 
 def build_features():
     """Download, clean, process, split, and upload taxi trip data."""
@@ -91,8 +94,10 @@ def build_features():
     os.makedirs(RAW_DATA_DIR, exist_ok=True)
     os.makedirs(PROCESSED_DATA_DIR, exist_ok=True)
 
-    # Download dataset from MinIO
-                ### Insert your code here ###
+    # Download Dataset from MinIO
+    if not download_from_minio(BUCKET_NAME, CONSOLIDATED_FILE_NAME, consolidated_file_path):
+        print(f"Error: The consolidated file {CONSOLIDATED_FILE_NAME} does not exist in MinIO.")
+        return
 
     print(f"Loading data from {consolidated_file_path}")
     df = pd.read_csv(consolidated_file_path)
@@ -107,7 +112,7 @@ def build_features():
     df.to_csv(features_file_path, index=False)
 
     # Upload processed dataset to MinIO
-                ### Insert your code here ###
+    upload_to_minio(features_file_path, BUCKET_NAME, FEATURES_FILE_NAME)
 
     # Split the data and save train/test sets
     split_and_save_data(df)
