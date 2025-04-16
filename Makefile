@@ -78,5 +78,5 @@ fclean:
 .PHONY:
 	run-docker run-docker-secure install-client mc-alias info add-bucket1 add-bucket2\
 	list-buckets rm-bucket1 rm-bucket2 add-user1 disable-user1 enable-user1 info-user1\
-	list-users set-venv docker-minio-mlflow ingest-data
+	list-users set-venv docker-minio-mlflow ingest-data build-features train clean fclean
  
